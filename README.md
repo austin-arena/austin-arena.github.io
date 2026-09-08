@@ -2,6 +2,8 @@
 
 Static website for **Austin Arena Co-operative Housing Society Limited**, Tathawade, Pune.
 
+🌐 **Live site: <https://austin-arena.github.io/>**
+
 Plain HTML, CSS and vanilla JavaScript — no build step, no framework, no dependencies to install.
 Event listings are **data-driven** and can be sourced from a JSON file, a CSV file, or a Google Sheet.
 
@@ -265,7 +267,7 @@ git init
 git add .
 git commit -m "Initial commit: Austin Arena society portal"
 git branch -M main
-git remote add origin https://github.com/<your-username>/austin-arena.git
+git remote add origin https://github.com/austin-arena/austin-arena.github.io.git
 git push -u origin main
 ```
 
@@ -285,8 +287,27 @@ to `main`. No build step is required — the repo root is uploaded as-is.
 Your site will be live at:
 
 ```
-https://<your-username>.github.io/austin-arena/
+https://austin-arena.github.io/
 ```
+
+### Why the repository is named `austin-arena.github.io`
+
+GitHub serves Pages at two different kinds of URL:
+
+| Repository name | Type | Live URL |
+|---|---|---|
+| `austin-arena.github.io` | **Organisation site** | `https://austin-arena.github.io/` |
+| anything else, e.g. `austin-arena` | Project site | `https://austin-arena.github.io/austin-arena/` |
+
+Because the repo is named exactly `<org>.github.io`, the portal is served from the **root domain**
+with no `/austin-arena/` path segment.
+
+Other repos in the org remain project sites — e.g. the Ganeshotsav microsite lives at
+`https://austin-arena.github.io/austin-arena-ganeshotsav-2026/`.
+
+> **Keep links relative.** Always link as `society-events.html` and `css/style.css`, never
+> `/society-events.html`. Relative links work at both the root and under a sub-path, so the site
+> keeps working no matter how it is hosted.
 
 ### Subsequent updates
 
@@ -306,7 +327,7 @@ is already plain static files. In that case you can delete `.github/workflows/de
 ### Custom domain (optional)
 
 1. Add a file named `CNAME` in the project root containing your domain, e.g. `austinarena.in`.
-2. Add a `CNAME` DNS record at your registrar pointing to `<your-username>.github.io`.
+2. Add a `CNAME` DNS record at your registrar pointing to `austin-arena.github.io`.
 3. **Settings → Pages → Custom domain** → enter the domain → tick **Enforce HTTPS**.
 
 ---
