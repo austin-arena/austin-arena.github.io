@@ -1,0 +1,12 @@
+# JetBrains IDE
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Editor / misc
+.vscode/
+*.log
+node_modules/
+

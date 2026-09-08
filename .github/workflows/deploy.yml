@@ -22,13 +22,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Turns Pages on automatically if it hasn't been enabled under
+          # Settings -> Pages yet. Prevents "Get Pages site failed - Not Found".
+          enablement: true
 
       - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           # The site is plain static HTML/CSS/JS - upload the repo root as-is
           path: '.'

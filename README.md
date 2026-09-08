@@ -273,6 +273,12 @@ Then in the repository on GitHub:
 
 **Settings → Pages → Build and deployment → Source → `GitHub Actions`**
 
+> ⚠️ **Do this before the first workflow run.** If Pages has never been enabled, the
+> `Configure Pages` step fails with `HttpError: Not Found … Get Pages site failed`.
+> The workflow passes `enablement: true` which tries to switch Pages on automatically,
+> but selecting the source manually is the guaranteed fix. After enabling it,
+> re-run the failed job from the **Actions** tab.
+
 That's it. The included workflow (`.github/workflows/deploy.yml`) publishes the site on every push
 to `main`. No build step is required — the repo root is uploaded as-is.
 
@@ -321,6 +327,9 @@ is already plain static files. In that case you can delete `.github/workflows/de
 | Logo missing | `assets/logo/arena_logo_white.svg` not found — the site automatically falls back to a text logo. |
 | Slider images not showing | Check filenames in `assets/images/gallery/` match the `background-image` URLs in `index.html`. |
 | 404 on GitHub Pages | Ensure Pages source is set, the workflow succeeded, and links use relative paths (`society-events.html`, not `/society-events.html`). |
+| `HttpError: Not Found` on **Configure Pages** | Pages isn't enabled yet. Go to **Settings → Pages → Source → GitHub Actions**, then re-run the job. Private repos need GitHub Pro for Pages. |
+| `Node.js 20 is deprecated` warning | Only a warning — the job still succeeds. Already addressed by using `checkout@v5` and `upload-pages-artifact@v4`. |
+| Workflow fails with `Resource not accessible by integration` | **Settings → Actions → General → Workflow permissions** → allow read/write, and confirm the `permissions:` block in `deploy.yml` is intact. |
 
 ---
 
