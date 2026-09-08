@@ -8,9 +8,15 @@
 
     const DEFAULTS = {
         source: 'json',
+        fallback: ['json'],
         url: 'data/events.json',
+        csvUrl: 'data/events.csv',
         sheetId: '',
         sheetName: 'Events',
+        sheetGid: '',
+        timeoutMs: 8000,
+        retries: 1,
+        cacheBust: true,
         hidePastEvents: false,
         groupByStatus: true,
         sortOrder: 'asc'
@@ -25,53 +31,159 @@
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+    /**
+     * Source registry.
+     * To add a new source later (REST API, Airtable, Notion, ...) add an entry
+     * here and reference its key from config.source / config.fallback.
+     * Each loader returns a Promise resolving to an array of raw event objects.
+     */
+    const SOURCES = {
+        json: {
+            label: 'local JSON file',
+            available: () => !!CONFIG.url,
+            load: () => fetchText(CONFIG.url).then(parseJSON)
+        },
+        csv: {
+            label: 'local CSV file',
+            available: () => !!(CONFIG.csvUrl || CONFIG.url),
+            load: () => fetchText(CONFIG.csvUrl || CONFIG.url).then(parseCSV)
+        },
+        sheet: {
+            label: 'Google Sheet',
+            available: () => !!CONFIG.sheetId,
+            load: () => fetchText(buildSheetUrl()).then((text) => {
+                // A private/unshared sheet returns an HTML sign-in page
+                if (/^\s*</.test(text)) {
+                    throw new Error('sheet is not publicly readable (received HTML, not CSV)');
+                }
+                return parseCSV(text);
+            })
+        }
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('events-grid');
         if (!grid) return;
 
         const status = document.getElementById('events-status');
+
         loadEvents()
-            .then((events) => renderEvents(grid, status, prepare(events)))
+            .then((result) => {
+                grid.setAttribute('data-source', result.key);
+                if (result.degraded) {
+                    console.warn('[Events] Primary source failed; showing data from "' +
+                        result.key + '". Events may be slightly out of date.');
+                }
+                renderEvents(grid, status, prepare(result.events));
+            })
             .catch((err) => {
-                console.error('[Events] Failed to load data:', err);
+                console.error('[Events] All sources failed:', err);
                 showStatus(status, 'error',
                     'Unable to load events right now. Please refresh the page or try again later.');
             });
     });
 
     /* ------------------------------------------------------------------ */
-    /* Data loading                                                        */
+    /* Data loading - primary source with ordered fallbacks                */
     /* ------------------------------------------------------------------ */
 
-    function loadEvents() {
-        const source = String(CONFIG.source || 'json').toLowerCase();
+    /** Ordered, de-duplicated, validated list of source keys to attempt. */
+    function buildChain() {
+        const wanted = [CONFIG.source]
+            .concat(Array.isArray(CONFIG.fallback) ? CONFIG.fallback : [])
+            .map((s) => String(s || '').toLowerCase().trim());
 
-        if (source === 'sheet') {
-            if (!CONFIG.sheetId) {
-                return Promise.reject(new Error('config.events.sheetId is empty'));
+        const seen = {};
+        return wanted.filter((key) => {
+            if (!key || seen[key]) return false;
+            seen[key] = true;
+            if (!SOURCES[key]) {
+                console.warn('[Events] Unknown source "' + key + '" - skipped.');
+                return false;
             }
-            const url = 'https://docs.google.com/spreadsheets/d/' +
-                encodeURIComponent(CONFIG.sheetId) +
-                '/gviz/tq?tqx=out:csv&sheet=' +
-                encodeURIComponent(CONFIG.sheetName || 'Events');
-            return fetchText(url).then(parseCSV);
-        }
-
-        if (source === 'csv') {
-            return fetchText(CONFIG.url).then(parseCSV);
-        }
-
-        return fetchText(CONFIG.url).then((text) => {
-            const data = JSON.parse(text);
-            return Array.isArray(data) ? data : (data.events || []);
+            if (!SOURCES[key].available()) {
+                console.warn('[Events] Source "' + key + '" is not configured - skipped.');
+                return false;
+            }
+            return true;
         });
     }
 
+    function loadEvents() {
+        const chain = buildChain();
+
+        if (!chain.length) {
+            return Promise.reject(new Error(
+                'No usable data source. Check config.source / sheetId / url in js/config.js'));
+        }
+
+        const attempt = (i) => {
+            const key = chain[i];
+            const src = SOURCES[key];
+
+            return src.load().then((events) => {
+                // An empty source counts as a failure only if a fallback remains
+                if ((!events || !events.length) && i < chain.length - 1) {
+                    throw new Error('returned no rows');
+                }
+                return { key: key, events: events || [], degraded: i > 0 };
+            }).catch((err) => {
+                console.warn('[Events] Source "' + key + '" (' + src.label + ') failed: ' + err.message);
+                if (i < chain.length - 1) return attempt(i + 1);
+                throw err;
+            });
+        };
+
+        return attempt(0);
+    }
+
+    function buildSheetUrl() {
+        const base = 'https://docs.google.com/spreadsheets/d/' +
+            encodeURIComponent(CONFIG.sheetId) + '/gviz/tq?tqx=out:csv';
+
+        // gid is more robust than a tab name: it survives renaming the tab
+        return CONFIG.sheetGid
+            ? base + '&gid=' + encodeURIComponent(CONFIG.sheetGid)
+            : base + '&sheet=' + encodeURIComponent(CONFIG.sheetName || 'Events');
+    }
+
+    /** fetch with timeout, retries and optional cache-busting. */
     function fetchText(url) {
-        return fetch(url, { cache: 'no-cache' }).then((res) => {
-            if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
-            return res.text();
-        });
+        const retries = Math.max(0, parseInt(CONFIG.retries, 10) || 0);
+
+        const once = () => {
+            const target = CONFIG.cacheBust
+                ? url + (url.indexOf('?') === -1 ? '?' : '&') + '_cb=' + Date.now()
+                : url;
+
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timer = setTimeout(() => controller && controller.abort(),
+                parseInt(CONFIG.timeoutMs, 10) || 8000);
+
+            return fetch(target, {
+                cache: 'no-store',
+                redirect: 'follow',
+                signal: controller ? controller.signal : undefined
+            }).then((res) => {
+                clearTimeout(timer);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.text();
+            }).catch((err) => {
+                clearTimeout(timer);
+                throw new Error(err.name === 'AbortError' ? 'request timed out' : err.message);
+            });
+        };
+
+        let chain = once();
+        for (let i = 0; i < retries; i++) {
+            chain = chain.catch(() => new Promise((r) => setTimeout(r, 400 * (i + 1))).then(once));
+        }
+        return chain;
+    }
+
+    function parseJSON(text) {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data : (data.events || []);
     }
 
     /* ------------------------------------------------------------------ */

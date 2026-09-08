@@ -87,16 +87,63 @@ The data source is selected in **`js/config.js`**:
 ```js
 window.ARENA_CONFIG = {
     events: {
-        source: 'json',            // 'json' | 'csv' | 'sheet'   <- currently JSON
-        url: 'data/events.json',   // used by 'json' and 'csv'
-        sheetId: '',               // used by 'sheet'
-        sheetName: 'Events',       // used by 'sheet'
-        hidePastEvents: false,     // true = hide events that already finished
-        groupByStatus: true,       // ongoing first, then upcoming, then completed
-        sortOrder: 'asc'           // 'asc' = soonest first, 'desc' = newest first
+        source: 'sheet',           // 'json' | 'csv' | 'sheet'   <- currently Google Sheet
+        fallback: ['json'],        // tried in order if `source` fails
+        url: 'data/events.json',   // used by source/fallback 'json'
+        csvUrl: 'data/events.csv', // used by source/fallback 'csv'
+        sheetId: '…',              // used by 'sheet'
+        sheetName: 'Events',
+        sheetGid: '',
+        timeoutMs: 8000,
+        retries: 1,
+        cacheBust: true,
+        hidePastEvents: false,
+        groupByStatus: true,
+        sortOrder: 'asc'
     }
 };
 ```
+
+### Switching the data source
+
+Change `source`. Nothing else needs touching — the same fields, statuses and card
+layout apply to every source.
+
+| Want to… | Set |
+|---|---|
+| Edit events in the repo (versioned, safest) | `source: 'json'` |
+| Edit events as a spreadsheet in the repo | `source: 'csv'` |
+| Let the committee edit without a deploy | `source: 'sheet'` |
+
+**Fallback chain.** Sources listed in `fallback` are tried in order if the primary
+one fails — unshared sheet, renamed tab, Google outage, timeout, or zero rows.
+The site then renders the last-committed `data/events.json` instead of an error and
+logs a warning to the browser console. Set `fallback: []` to disable and show the
+error instead.
+
+> Because of this, **keep `data/events.json` reasonably current even while using the
+> sheet** — it is the safety net.
+
+**Reliability settings**
+
+| Option | Purpose |
+|---|---|
+| `timeoutMs` | Abort a slow source (default 8s) and move to the fallback |
+| `retries` | Extra attempts per source before giving up (default 1) |
+| `cacheBust` | Prevents a stale cached copy being served |
+| `sheetGid` | Use the tab's `gid` instead of its name — survives renaming |
+
+**Which source am I actually seeing?** Open the events page and run in DevTools:
+
+```js
+document.getElementById('events-grid').dataset.source   // "sheet" | "json" | "csv"
+```
+
+If it says `json` while `source` is `sheet`, the sheet failed — the Console shows why.
+
+**Adding a brand-new source type** (internal API, Airtable, Notion…): add one entry
+to the `SOURCES` registry in `js/events.js` returning a promise of raw event objects,
+then reference its key from `source` / `fallback`. No other code changes.
 
 ### Event status is automatic
 

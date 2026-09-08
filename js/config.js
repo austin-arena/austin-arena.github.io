@@ -1,40 +1,49 @@
 /**
  * Austin Arena - Site Configuration
- * ---------------------------------
- * Change ONLY this file to switch where the events data comes from.
+ * =================================
+ * This is the ONLY file you need to edit to change where events come from.
  *
- * events.source options:
- *   'json'   -> local/remote JSON file      (events.url = 'data/events.json')  [current]
- *   'csv'    -> local/remote CSV file       (events.url = 'data/events.csv')
- *   'sheet'  -> Google Sheet (published)    (events.sheetId + events.sheetName)
+ * -- Switching data source ---------------------------------------------
+ *   source: 'json'   -> data/events.json          (committed to the repo)
+ *   source: 'csv'    -> data/events.csv           (committed to the repo)
+ *   source: 'sheet'  -> Google Sheet, live edits, no deploy needed
  *
- * Event status (Ongoing / Upcoming / Completed) is derived automatically from
- * startDate and endDate - you do not need to maintain it by hand.
+ * -- Fallback chain ----------------------------------------------------
+ * `fallback` lists sources to try, in order, if the primary one fails.
+ * source 'sheet' + fallback ['json'] means the site keeps working (with
+ * slightly older data) if the sheet is unshared or Google is unreachable.
+ * Set `fallback: []` to disable and surface the error instead.
  *
- * See README.md for the Google Sheet setup steps and column list.
+ * Event status (Upcoming / Happening Now / Completed / Dates Awaited) is
+ * always derived from startDate + endDate. Never maintain it by hand.
+ *
+ * See README.md -> "Managing events data" for full details.
  */
 window.ARENA_CONFIG = {
     events: {
-        // Active data source
-        source: 'json',
+        /* ---- Where the data comes from ---------------------------------- */
+        source: 'sheet',            // 'json' | 'csv' | 'sheet'
+        fallback: ['json'],         // tried in order if `source` fails
 
-        // Used when source is 'json' or 'csv'
-        url: 'data/events.json',
+        /* ---- Local file sources ----------------------------------------- */
+        url: 'data/events.json',    // used by source/fallback 'json'
+        csvUrl: 'data/events.csv',  // used by source/fallback 'csv'
 
-        // Used when source is 'sheet'
-        // Sheet ID is the long string in the sheet URL:
-        // https://docs.google.com/spreadsheets/d/<SHEET_ID>/edit
-        sheetId: '',
-        sheetName: 'Events',
+        /* ---- Google Sheet source ---------------------------------------- */
+        // From the sheet URL: docs.google.com/spreadsheets/d/<SHEET_ID>/edit
+        sheetId: '1-NNSIvxGw5iPsZ3ykhiZHLgDFEG7y7ASoABRBbXnNFs',
+        sheetName: 'Events',        // tab name (case-sensitive)
+        sheetGid: '',               // optional: tab gid from '#gid=123456'.
+                                    // Survives the tab being renamed. Wins if set.
 
-        // Hide events that have already finished
-        hidePastEvents: false,
+        /* ---- Network reliability ---------------------------------------- */
+        timeoutMs: 8000,            // give up on a source after this long
+        retries: 1,                 // extra attempts per source before failing
+        cacheBust: true,            // append a token so no stale copy is served
 
-        // Show ongoing events first, then upcoming, then completed
-        groupByStatus: true,
-
-        // Sort by start date within each group: 'asc' (soonest first) or 'desc'
-        sortOrder: 'asc'
+        /* ---- Display ----------------------------------------------------- */
+        hidePastEvents: false,      // true = drop finished events entirely
+        groupByStatus: true,        // ongoing -> upcoming -> TBA -> completed
+        sortOrder: 'asc'            // 'asc' = soonest first, 'desc' = newest
     }
 };
-
