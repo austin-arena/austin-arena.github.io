@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Austin Arena Co-operative Housing Society Limited</title>
+
+    <!-- Google Fonts Preconnect & Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap"
+          rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ACCESSIBILITY: Skip link for keyboard users -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- HERO CAROUSEL / SLIDER HEADER -->
+<div class="hero-container" role="region" aria-roledescription="carousel" aria-label="Society Highlight Gallery">
+
+    <!-- HEADER WITH LOGO -->
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo-container" aria-label="Austin Arena Co-operative Housing Society - Homepage">
+                <img src="assets/logo/arena_logo_white.svg"
+                     alt="Austin Arena Logo"
+                     id="main-logo"
+                     onerror="handleLogoError()">
+
+                <div id="logo-fallback" class="logo-fallback" style="display: none;">
+                    <span class="brand-top">AUSTIN</span>
+                    <span class="brand-bottom">arena</span>
+                </div>
+            </a>
+
+            <div class="header-brand">
+                <span class="header-society-name">Austin Arena Co-operative Housing Society Ltd.</span>
+                <span class="header-tagline">Society Info Portal</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- BACKGROUND IMAGE SLIDES -->
+    <div class="slider-slide active" role="group" aria-roledescription="slide" aria-label="1 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-2.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="2 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-1.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="3 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-3.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="4 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-4.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="5 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-5.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="6 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-6.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="7 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-7.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="8 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-8.jpg');"></div>
+    <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="9 of 9"
+         style="background-image: url('assets/images/gallery/arena-gallery-9.jpg');"></div>
+    <div class="slider-overlay"></div>
+
+    <!-- HERO TEXT CONTENT -->
+    <div class="hero-content">
+        <div class="hero-content-inner">
+            <h1 class="hero-title">The Arena of<br>Complete Living</h1>
+            <p class="hero-tagline">Society Info Portal &mdash; notices, events &amp; resident services in one place.</p>
+        </div>
+    </div>
+
+    <!-- ACCESSIBLE SLIDER DOT NAVIGATION -->
+    <div class="slider-dots" role="tablist" aria-label="Select slide to display">
+        <button class="dot active" role="tab" aria-selected="true" data-slide="0" aria-label="Slide 1"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="1" aria-label="Slide 2"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="2" aria-label="Slide 3"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="3" aria-label="Slide 4"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="4" aria-label="Slide 5"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="5" aria-label="Slide 6"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="6" aria-label="Slide 7"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="7" aria-label="Slide 8"></button>
+        <button class="dot" role="tab" aria-selected="false" data-slide="8" aria-label="Slide 9"></button>
+    </div>
+</div>
+
+<!-- MAIN CONTENT PORTAL -->
+<main id="main-content" class="highlights-section" tabindex="-1">
+
+    <div class="section-header">
+        <h2>Society Information Portal</h2>
+        <p>Select a portal section below to access dedicated web information and updates for Austin Arena.</p>
+    </div>
+
+    <div class="cards-grid">
+
+        <div class="highlight-card">
+            <div>
+                <i class="fa-solid fa-building-columns card-icon" aria-hidden="true"></i>
+                <h3 class="card-title">Society Information</h3>
+                <p class="card-text">View society registration details, Managing Committee structure, bye-laws, and
+                    official guidelines.</p>
+            </div>
+            <a href="society-info.html" class="card-btn" aria-label="Explore Society Information Details">Explore Details <i
+                    class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="highlight-card">
+            <div>
+                <i class="fa-solid fa-bullhorn card-icon" aria-hidden="true"></i>
+                <h3 class="card-title">Notices & Circulars</h3>
+                <p class="card-text">Stay up-to-date with recent announcements, AGM/EGM notices, and maintenance bill
+                    communications.</p>
+            </div>
+            <a href="notices.html" class="card-btn" aria-label="View Notices and Circulars">View Notices <i
+                    class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="highlight-card">
+            <div>
+                <i class="fa-solid fa-calendar-days card-icon" aria-hidden="true"></i>
+                <h3 class="card-title">Society Events</h3>
+                <p class="card-text">Explore community cultural events, festival celebrations, sports events, and
+                    resident gatherings.</p>
+            </div>
+            <a href="society-events.html" class="card-btn" aria-label="View Society Events">View Events <i class="fa-solid fa-arrow-right"
+                                                                                         aria-hidden="true"></i></a>
+        </div>
+
+        <div class="highlight-card">
+            <div>
+                <i class="fa-solid fa-headset card-icon" aria-hidden="true"></i>
+                <h3 class="card-title">Helpdesk & Support</h3>
+                <p class="card-text">Raise maintenance tickets, contact society administration, or access resident
+                    emergency contacts.</p>
+            </div>
+            <a href="helpdesk.html" class="card-btn" aria-label="Contact Society Office">Contact Office <i
+                    class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+    </div>
+
+    <!-- ADDRESS FOOTER BOX -->
+    <address class="address-bar">
+        <h3><i class="fa-solid fa-location-dot" style="color: var(--brand-orange);" aria-hidden="true"></i> Registered
+            Office Address</h3>
+        <p>Austin Arena Co-op Housing Society Ltd., Sr. No. 56, Near Decathlon, Bhumkar Chowk, Tathawade, Pune - 411033,
+            Maharashtra, India.</p>
+    </address>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 Austin Arena Co-operative Housing Society Limited. Reg. under Maharashtra Co-operative Societies Act,
+        1960.</p>
+</footer>
+
+<!-- External JavaScript -->
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{
+  "events": [
+    {
+      "id": "ganeshotsav-2026",
+      "title": "Ganeshotsav 2026",
+      "description": "Our flagship eleven-day celebration featuring Ganesh Sthapana, daily aarti, cultural performances by residents, mahaprasad and the grand visarjan procession.",
+      "startDate": "2026-09-14",
+      "endDate": "2026-09-24",
+      "day": "Daily",
+      "time": "All Day",
+      "venue": "Ganesh Mandap, Austin Arena",
+      "badge": "Cultural",
+      "link": "https://austin-arena.github.io/austin-arena-ganeshotsav-2026/",
+      "linkLabel": "Visit Event Page",
+      "external": true
+    },
+    {
+      "id": "navratri-2026",
+      "title": "Navratri Garba Nights",
+      "description": "Nine nights of dandiya and garba with live dhol, best-dressed contests and food stalls for all residents and their families.",
+      "startDate": "",
+      "endDate": "",
+      "day": "",
+      "time": "",
+      "venue": "",
+      "badge": "Cultural",
+      "link": "",
+      "linkLabel": ""
+    },
+    {
+      "id": "diwali-2026",
+      "title": "Diwali Milan & Fireworks",
+      "description": "Community Diwali gathering with rangoli competition, lantern decoration awards and a supervised eco-friendly fireworks display.",
+      "startDate": "2026-11-08",
+      "endDate": "2026-11-08",
+      "day": "Sunday",
+      "time": "6:30 PM",
+      "venue": "Main Amphitheatre",
+      "badge": "Cultural",
+      "link": "",
+      "linkLabel": ""
+    },
+    {
+      "id": "apl-cricket-2026",
+      "title": "Arena Premier League (Cricket)",
+      "description": "Inter-wing box cricket tournament for residents above 14 years, with separate men's, women's and kids' categories.",
+      "startDate": "",
+      "endDate": "",
+      "day": "",
+      "time": "",
+      "venue": "",
+      "badge": "Sports",
+      "link": "",
+      "linkLabel": ""
+    },
+    {
+      "id": "republic-day-2027",
+      "title": "Republic Day Flag Hoisting",
+      "description": "Flag hoisting ceremony followed by patriotic performances from society children and breakfast for all residents.",
+      "startDate": "",
+      "endDate": "",
+      "day": "",
+      "time": "",
+      "venue": "",
+      "badge": "Community",
+      "link": "",
+      "linkLabel": ""
+    }
+  ]
+}
+
